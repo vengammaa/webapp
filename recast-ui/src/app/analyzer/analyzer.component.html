@@ -1,0 +1,197 @@
+<!-- List of all existing reports available -->
+<section class="section-height ml-1 mt-0 p-2" [hidden]="showList == false">
+    <div class="h550">
+      <table datatable id="tasks" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+        class="table row-border hover table-bordered text-center">
+        <thead class="headerBg">
+          <tr>
+            <th></th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Report Type</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of tasks">
+            <td>
+                <div class="radio">
+                     <label>
+                       <input type="radio" name="optradio" (change)="setTaskId($event,task)">
+                      </label>
+                </div>
+           </td> 
+            <td>{{task.id}}</td>
+         <!--<td><a class="cursor-pointer" (click)="openEditForm(task)">{{task.taskName}}</a></td>-->   
+            <td>{{task.taskName}}</td>
+            <td>{{task.reportTypeCode}}</td>
+            <td> 
+                <span
+                [ngClass]="{'text-danger':task['taskStatus'].name == 'Failed','text-success':task['taskStatus'].name == 'Finished'}">
+                {{task['taskStatus'].name}}
+              </span> 
+              <!-- [routerLink]="['/insights/',proj.id]"  -->
+              <!-- <button *ngIf="task['taskStatus'].name == 'Finished'" class="badge badge-info btn-link"
+                (click)="getTaskInfo(task)">Info</button> -->
+                <!-- <a  *ngIf="task['taskStatus'].name == 'Finished'" class="badge badge-info btn-link">Info</a> -->
+              <button *ngIf="task['taskStatus'].name == 'Failed'" class="badge badge-danger btn-link"
+                (click)="showFailedTasksSection(task)">Info
+              </button>
+            </td>
+            <td>
+                <i class="fa fa-trash cursor-pointer" aria-hidden="true" data-toggle="modal"
+                data-target="#deleteConfirmation" (click)="openModal(task)"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="style-div1">
+      <button class="btn btn-common-style btn-primary btn-sm" data-toggle="modal" data-target="#newTask">Add</button>
+      <button class="btn btn-primary btn-sm"(click)="getAddedTasks()">Refresh</button>
+    </div>
+
+  </section>
+
+
+  <!-- =================================================== add new section ================================================ -->
+<div class="modal forgotPwdModal fade" id="newTask" tabindex="-1" role="dialog" aria-labelledby="confirmation"
+aria-hidden="true" style="top:20%">
+<div class="modal-dialog" role="document">
+  <div class="modal-content"> 
+    <div class="modal-header" style="background-color: #0c2a57;">
+      <h5 class="modal-title " id="forgotPwdLabel" style="color: white;">New Task </h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)=" clearForm()">
+        <span aria-hidden="true" style="color: white;">&times;</span>
+      </button> 
+    </div>
+    <div class="modal-body mt-2">
+      <ng-container *ngIf="errorMessage">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <strong>{{taskErrorMessage}}</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="onDismissError()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </ng-container>
+      <form [formGroup]="newTaskForm">
+        <div class="form-group">
+          <label for="name" class="labelwidth form-label-font text-color-brown">Task Name</label>
+          <input type="text" class="textbox form-control form-control-sm" formControlName="name" />
+        </div>
+        <div class="form-group">
+          <label for="reportType" class="labelwidth form-label-font text-color-brown">Report Type</label>
+          <input type="text" class="textbox form-control form-control-sm" [value]="reportType" [placeholder]="reportType" formControlName="reportType" disabled/>
+        </div>
+        <div class="form-group">
+          <label for="connections" class="labelwidth form-label-font text-color-brown">Connection</label>
+          <input type="text" class="textbox form-control form-control-sm" [value]="connectionName" [placeholder]="connectionName" formControlName="connections" disabled/>
+          <!-- <select class="textbox" formControlName="connections">
+            <option selected>{{connectionName}}</option>
+          </select> -->
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="clearForm()">Close</button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="onSubmit()" [disabled]='!newTaskForm.valid'>Analyze</button>
+    </div>
+  </div>
+</div>
+</div>
+
+  <!-- ================================================= DELETION CONFIRMATION - Task============================================ -->
+<div class="modal fade" id="deleteConfirmation" tabindex="-1" role="dialog"
+aria-labelledby="confirmation" aria-hidden="true" style="top:20%">
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header" style="background-color: #0c2a57;">
+      <h5 class="modal-title " id="forgotPwdLabel" style="color: white;">Deletion confirmation </h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true" style="color: white;">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body mt-2"  *ngIf="!isTaskStatusSubmitted" >
+      <div class="alert alert-warning" role="alert">
+       All the records associated with  {{taskName}} will also be deleted.
+       <br>Are you sure you want to delete {{taskName}} ?
+      </div>
+      <!-- <h6> </h6> -->
+    </div>
+    <div class="modal-body mt-2"  *ngIf="isTaskStatusSubmitted" >
+      <div class="alert alert-warning" role="alert">
+       Can not delete the task when the status is "Submitted".
+       <br>Please try after status changes to "Finished".
+      </div>
+      <!-- <h6> </h6> -->
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"
+        (click)="clearField()">Close</button>
+      <button type="button"  *ngIf="!isTaskStatusSubmitted" class="btn btn-primary btn-sm" (click)="deleteTask()">Delete</button>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- =====================================================  Task Details - Failed Tasks =========================================== -->
+<section class="section-container ml-1 mt-0 p-2" *ngIf="showFailedTasks == true">
+    <table id="task-failure-details" datatable [dtOptions]="dtOptions"
+      class="table row-border hover table-bordered text-center table-fixed">
+      <thead>
+        <tr>
+          <th>
+            Task Name
+          </th>
+          <th>Failure Reason/Exception</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{failedTaskName}}</td>
+          <td>{{failureReason}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-link btn-sm mt-2" (click)="hideForm()">Back</button>
+  </section>
+
+  <!-- ============================================== Loading Screen ============================================= -->
+  <div class="modal fade" id="task-loading" tabindex="-1" role="dialog"
+  aria-labelledby="confirmation" aria-hidden="true" style="top:20%">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="center-style-div section-container">
+            <mat-spinner class="spinner-position"></mat-spinner>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <p class="p-position" style="position: relative;top: 50%;">Getting report information...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div>
+    <mat-card-actions  class="style-div">
+      <div class="row">
+        <div class="col-md-4">
+          <button mat-button matStepperPrevious class="btn btn-primary btn-sm" (click)="hideForm()">Prev</button> 
+        </div>
+        <div class="col-md-4" style="text-align: center;">
+          <button id="metadataBtn" class="btn btn-primary btn-md" [disabled]="isDisabled" (click)="infoExtract()">Get Metadata</button>
+        </div>
+        <div class="col-md-4">
+          
+        </div>
+      </div>
+    <!-- <div [placement]="isDisabled ? 'left' : ''" [ngbTooltip]="isDisabled ? 'select existing task and click next' : ''" >
+      <button mat-button matStepperNext class="btn btn-primary btn-sm" [disabled]="isDisabled">Next</button>
+    </div>  -->
+<!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+    </mat-card-actions>
+  </div>
+
+  <!-- <div style="text-align: center;">
+    <button class="btn btn-primary btn-md" [disabled]="isDisabled" (click)="reportDetailInfo()">Get Metadata</button>
+  </div> -->

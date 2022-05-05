@@ -1,0 +1,53 @@
+
+<h1>
+    <b>Analyze and Rationalize source system</b>
+</h1>
+<div>
+    <!-- <mat-horizontal-stepper [labelPosition]="'bottom'" #stepper (selectionChange)="selectionChange($event)">    -->
+        <mat-horizontal-stepper [labelPosition]="'bottom'" #stepper (selectionChange)="selectionChange($event)">
+        <mat-step completed="false" label ="Select Source System">
+            <!-- <ng-template matStepLabel>Set Connection Parameters</ng-template> -->
+            <app-source-system (nextClicked)="nextClicked($event)"></app-source-system>
+        </mat-step>
+       <mat-step completed="false">
+        <ng-template matStepLabel>Set Connection Parameters</ng-template>
+        <ngx-mat-step-content-lazy-wrapper>
+            <ng-template ngxMatStepContentLazy>
+                <app-connection-param></app-connection-param>   
+            </ng-template>
+        </ngx-mat-step-content-lazy-wrapper>
+       </mat-step>
+    <mat-step completed="false" label ="Select Report"> 
+        <ngx-mat-step-content-lazy-wrapper>
+            <ng-template ngxMatStepContentLazy>
+                 <app-establish-connection></app-establish-connection>
+            </ng-template>
+        </ngx-mat-step-content-lazy-wrapper>
+    </mat-step>  
+    
+        <mat-step completed="false">
+            <ng-template matStepLabel>Add Task for Analysis</ng-template>
+            <ngx-mat-step-content-lazy-wrapper>
+                <ng-template ngxMatStepContentLazy>
+                    <app-analyzer></app-analyzer>   
+                </ng-template>
+            </ngx-mat-step-content-lazy-wrapper>
+           </mat-step>
+        <!-- <mat-step completed="false">
+            <ng-template matStepLabel>Analyze Report & Universe</ng-template>
+            <ngx-mat-step-content-lazy-wrapper>
+                <ng-template ngxMatStepContentLazy>
+                    <app-task-details></app-task-details>   
+                </ng-template>
+            </ngx-mat-step-content-lazy-wrapper>
+           </mat-step>
+    <mat-step> 
+        <ng-template matStepLabel>Finish</ng-template>
+            <ngx-mat-step-content-lazy-wrapper>
+                <ng-template ngxMatStepContentLazy>
+                    <app-finish></app-finish>  
+                </ng-template>
+            </ngx-mat-step-content-lazy-wrapper>
+    </mat-step> -->
+    </mat-horizontal-stepper>
+</div>

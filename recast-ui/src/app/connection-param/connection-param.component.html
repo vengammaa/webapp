@@ -1,0 +1,394 @@
+<section class="section-container ml-1 mt-0 p-2" [hidden]="showConnList == false" >
+  <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger" id="connections" class="table row-border hover table-bordered text-center" >
+      <thead class="headerBg">
+        <tr> 
+          <th></th> 
+          <th>Connection Name</th>
+          <th>Report Type</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let conn of addedConnections"> 
+          <td>
+              <div class="radio">
+                   <label><input type="radio" name="optradio" (change)="setConnectionId($event,conn, mymodal)"></label>
+              </div>
+         </td>
+          <td>{{conn.name}}</td>
+          <td >{{conn.reportType}}</td> 
+          <td>{{conn.status}}</td>
+          <td>
+              <button class="btn btn-sm btn-primary" (click)="testConnection(conn, testmodal)">test</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+               <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="openEditConnSection(conn)"></i>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+               <i class="fa fa-trash cursor-pointer" aria-hidden="true" data-toggle="modal" data-target="#confirmation" (click)="openDeleteModal(conn)"></i> 
+              <!-- <button class="btn"><i class="fa fa-trash cursor-pointer" data-toggle="modal" data-target="#confirmation" (click)="openDeleteModal(conn)"></i></button> -->
+          </td>            
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-common-style btn-sm btn-primary" 
+    aria-hidden="true" data-toggle="modal" data-target="#conn-selection">Add
+    </button>
+  </section>
+
+  <!-- ================================================ Establishing Connection ================================== -->
+  <div class="center-style-div section-container" *ngIf="showEstablishingConnection == true">
+    <mat-spinner class="spinner-position"></mat-spinner>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class="p-position">Establishing connection...</p>
+  </div>
+  
+  <!-- ===============================================NEW CONNECTION ============================================ -->
+  <section  class="section-container ml-1 mt-0 p-2" *ngIf="showNewConnectionForm == true">
+      <h5 align="center">New Connection</h5>  
+      <hr/>
+      <form [formGroup]="newConnectionForm " (ngSubmit)="onSubmit()" class="centered" >
+        <div class="form-group">
+          <div class="row">
+            <div class="col-lg-3">
+              <label for="connName" class="label-width form-label-font text-color-brown">Connection Name</label>
+            </div>
+            <div class="col-lg-9">
+              <input type="text" formControlName="connName" class="textbox ml-5  form-control form-control-sm input-conn-txt" />
+            </div>
+          </div>
+        </div>
+      </form>  
+          <ng-container *ngFor="let param of connParams">
+              <div class="form-group centered" *ngIf = "connectionSelection == 'server'">
+                <div class="row" *ngIf = "param.key != 'Path'">
+                  <div class="col-lg-3">
+                    <label class="text-color-brown form-label-font label-width">{{param.key}}</label>
+                  </div>
+                  <div class="col-lg-9">
+                    <input [type]="param.key == 'Port' ? 'number' : 'text'"
+                    *ngIf = "param.key != 'Connection Type' && param.key != 'Extract Type'&& param.key != 'Password'"
+                    type="text" class="textbox ml-3 textbox form-control form-control-sm" [(ngModel)]="param.value" [ngClass]="{ 'is-invalid': submitted && f.connParams.errors }" />
+                    <div class="ml-3" *ngIf = "param.key == 'Password'">
+                      <input type="password" class="form-control" (keypress)="omit_space($event)"
+                      [(ngModel)]="param.value" #passwordField>
+                        <span (click)="passwordField.type=passwordField.type=='password'?'text':'password'" 
+                        class="fa fa-fw field-icon toggle-password"
+                            [ngClass]="(passwordField.type=='password')?' fa-eye':' fa-eye-slash'"></span>
+                    </div>
+                    <div class="ml-3" *ngIf = "param.key == 'Connection Type'">
+                      <select name="conType" id="con-type" style="height: 38px; width: 100%;" [(ngModel)]="selectedLevel"
+                        (ngModelChange)="selected($event)">
+                        <option value="http">Unsecure (http)</option>
+                        <option value="https">Secure (https)</option>
+                      </select>
+                    </div>
+                    <div class="ml-3" *ngIf = "param.key == 'Extract Type'">
+                      <select name="exrtType" id="exrt-type" style="height: 38px; width: 100%;" [(ngModel)]="selectedExtract"
+                        (ngModelChange)="selectedExtractType($event)">
+                        <option value="twb">Workbooks</option>
+                        <option value="tds">Datasources</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group centered"  *ngIf = "connectionSelection == 'path'">
+                <div class="row"  *ngIf = "param.key == 'Extract Type'">
+                  <div class="col-lg-3">
+                    <label class="text-color-brown form-label-font label-width">{{param.key}}</label>
+                  </div>
+                  <div class="col-lg-9">
+                    <!-- <input type="text"
+                    class="textbox ml-3 textbox form-control form-control-sm" [(ngModel)]="param.value" 
+                    [ngClass]="{ 'is-invalid': submitted && f.connParams.errors }"> -->
+                    <select name="exrtType" id="exrt-type" style="height: 38px; width: 100%;" [(ngModel)]="selectedExtract"
+                        (ngModelChange)="selectedExtractType($event)">
+                        <option value="twb">Workbooks</option>
+                        <option value="tds">Datasources</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row" *ngIf = "param.key == 'Path'">
+                    <div class="col-md-3">
+                      <label for="file">Select File</label>
+                    </div>
+                    <div class="col-md-5">
+                      <input type="file" name="twbFile" 
+                      accept=".twb,.tds,.zip" (change)="onFileSelect($event)" />
+                    </div>
+                    <div class="col-md-4">
+                      <div [placement]="uploadDisabled ? 'bottom' : ''" [ngbTooltip]="uploadDisabled ? 'please select a twb, tds or zip file' : ''">
+                        <button class="btn btn-success btn-sm" type="submit" (click) = "submitFile(filecheckmodal)" 
+                        [disabled]="uploadDisabled">Upload</button>
+                      </div>
+                    </div>
+                </div>
+              </div>
+          </ng-container>            
+          <div class="form-group centered" *ngIf = "connectionSelection == 'server'">
+              <button class="btn btn-common-style btn-sm btn-primary" (click)="addConnection(connParams, errormodal)">                   
+                  Add 
+              </button>
+              <a class="btn btn-link" (click)="hideForm()">Cancel</a>
+          </div>
+          <div class="form-group centered" *ngIf = "connectionSelection == 'path'">
+            <button class="btn btn-common-style btn-sm btn-primary" [disabled]="!addLocal"
+            (click)="addConnection(connParams, errormodal)">                   
+                Add
+            </button>
+            <a class="btn btn-link" (click)="hideForm()">Cancel</a>
+        </div>
+  </section>
+  
+  
+  <!-- ================================================= Confirmation Modal ======================================== -->
+  <div class="modal forgotPwdModal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmation" aria-hidden="true" style="top:20%">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: #0c2a57;">
+            <h5 class="modal-title " id="forgotPwdLabel" style="color: white;"> </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" style="color: white;">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body mt-2">
+              <div *ngIf="hideConfirmation == false"  class="form-group">
+                  <h6 class="text-color-brown form-label-font ">Are you sure you want to delete {{connDisplayName}} ?</h6>
+               
+              </div>
+              <div *ngIf="hideConfirmation == true"  class="alert alert-warning" role="alert">
+                <!-- {{deleteConnError}} -->
+                Please delete the associated tasks to delete this connection
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button *ngIf="hideConfirmation == false" type="button" class="btn btn-primary btn-sm" (click)="deleteConnection()">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div> 
+
+    <!-- ================================================= Testing Modal ======================================== -->
+  
+    <ng-template #mymodal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Testing Connection</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Please test the connection before proceeding
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Ok</button>
+      </div>
+    </ng-template>
+
+    <!-- ================================================= After Testing Modal ======================================== -->
+  
+    <ng-template #testmodal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Test Connection Result</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{testingStatus}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Ok</button>
+      </div>
+    </ng-template>
+
+    <!-- ================================================= Error Modal ======================================== -->
+  
+    <ng-template #errormodal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Error</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{modalErrorMessage}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Ok</button>
+      </div>
+    </ng-template>
+
+    <!-- ================================================= File Type Error Modal ======================================== -->
+  
+    <ng-template #filecheckmodal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Error</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Please select a twb or tds file!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Ok</button>
+      </div>
+    </ng-template>
+
+    <!-- ==================EDIT CONNECTION FORM =========================== -->
+  
+  <section class="section-container p-2 mt-0" *ngIf="showEditConnectionForm == true">
+      <h5 >Edit Connection</h5>  
+      <hr/>
+      <ng-container *ngFor="let param of connParamDetails">
+        <div class="form-group mt-2 " *ngIf="connDetails.status == 'Success' || connDetails.status == 'Fail' || connDetails.status == 'not tested'">
+          <div class="row" *ngIf = "param.rptConParamType.name != 'Path'">
+            <div class="col-lg-3">
+              <label class="text-color-brown form-label-font label-width">{{param.rptConParamType.name}}</label>
+            </div>
+            <div class="col-lg-6">
+              <input [type]="param.rptConParamType.name == 'Port' ? 'number' : 'text'" 
+              *ngIf = "param.rptConParamType.name != 'Connection Type' && param.rptConParamType.name != 'Extract Type' && param.rptConParamType.name != 'Password'"
+              class="textbox ml-3 textbox form-control form-control-sm" 
+              [(ngModel)]="param.rptConParamValue" [ngClass]="{ 'is-invalid': submitted && f.connParams.errors }" />
+              <div class="ml-3" *ngIf = "param.rptConParamType.name == 'Password'">
+                <input type="password" class="form-control" (keypress)="omit_space($event)"
+                [(ngModel)]="param.rptConParamValue" #passwordEditField>
+                  <span (click)="passwordEditField.type=passwordEditField.type=='password'?'text':'password'" 
+                  class="fa fa-fw field-icon toggle-password"
+                      [ngClass]="(passwordEditField.type=='password')?' fa-eye':' fa-eye-slash'"></span>
+              </div>
+              <div class="ml-3" *ngIf = "param.rptConParamType.name == 'Connection Type'">
+                <select name="conType" id="edit-con-type" style="height: 38px; width: 100%;" [(ngModel)]="param.rptConParamValue"
+                  (ngModelChange)="editSelected($event)">
+                  <option value="http">Tableau Server (http)</option>
+                  <option value="https">Tableau Online (https)</option>
+                </select>
+              </div>
+              <div class="ml-3" *ngIf = "param.rptConParamType.name == 'Extract Type'">
+                <select name="exrtType" id="edit-exrt-type" style="height: 38px; width: 100%;" [(ngModel)]="param.rptConParamValue"
+                  (ngModelChange)="editSelectedExtractType($event)">
+                  <option value="twb">Workbooks</option>
+                  <option value="tds">Datasources</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3"></div>
+          </div>
+        </div>
+        <div class="form-group mt-2 " *ngIf="connDetails.status == 'Success For Path' || connDetails.status == 'Fail For Path' || connDetails.status == 'not tested for path'">
+          <div class="row" *ngIf = "param.rptConParamType.name == 'Extract Type'">
+            <div class="col-lg-3">
+              <label class="text-color-brown form-label-font label-width">{{param.rptConParamType.name}}</label>
+            </div>
+            <div class="col-lg-6">
+              <select name="exrtType" id="edit-exrt-type" style="height: 38px; width: 100%;" [(ngModel)]="param.rptConParamValue"
+                (ngModelChange)="editSelectedExtractType($event)">
+                <option value="twb">Workbooks</option>
+                <option value="tds">Datasources</option>
+              </select>
+            </div>
+            <div class="col-lg-3"></div>
+          </div>
+          <div class="row" *ngIf = "param.rptConParamType.name == 'Path'">
+            <div class="col-md-3">
+              <label for="file">Select File</label>
+            </div>
+            <div class="col-md-5">
+              <input type="file" name="twbEditFile" 
+              accept=".twb,.tds,.zip" (change)="onFileEditSelect($event)" />
+            </div>
+            <div class="col-md-4">
+              <div [placement]="editUploadDisabled ? 'bottom' : ''" [ngbTooltip]="editUploadDisabled ? 'please select a twb, tds or zip file' : ''">
+                <button class="btn btn-success btn-sm" [disabled]="editUploadDisabled"
+                type="submit" (click) = "submitFileEdit(filecheckmodal)">Upload</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </ng-container>            
+        <div class="form-group " *ngIf = "connectionSelection == 'server'">
+            <button class="btn btn-common-style btn-sm btn-primary" aria-hidden="true" data-toggle="modal" data-target="#editConfirmation" (click)="openEditConnModal(connDetails)">                   
+                Edit 
+            </button>
+            <a class="btn btn-link" (click)="hideForm()">Cancel</a>
+        </div>
+        <div class="form-group " *ngIf = "connectionSelection == 'path'">
+          <button class="btn btn-common-style btn-sm btn-primary" [disabled]="!addLocal"
+            aria-hidden="true" data-toggle="modal" data-target="#editConfirmation" 
+            (click)="openEditConnModal(connDetails)">                   
+              Edit 
+          </button>
+          <a class="btn btn-link" (click)="hideForm()">Cancel</a>
+      </div>
+    </section>
+  
+  
+    <!-- ================================================= EDIT CONFIRMATION MODAL ======================================== -->
+  <div class="modal forgotPwdModal fade" id="editConfirmation" tabindex="-1" role="dialog" aria-labelledby="editConfirmation" aria-hidden="true" style="top:20%">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: #0c2a57;">
+            <h5 class="modal-title " id="forgotPwdLabel" style="color: white;"> </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" style="color: white;">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body mt-2">
+              <div *ngIf="editConfirmation == false" class="form-group">
+                  <h6  class="text-color-brown form-label-font ">Are you sure you want to Edit {{connDisplayName}} ?</h6>
+              </div>
+              <div *ngIf="editConfirmation == true"  class="alert alert-warning" role="alert">
+                <!-- {{deleteConnError}} -->
+                Please delete the associated tasks to edit this connection
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary btn-sm" (click)="editConnection()">Edit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================ Connection Selection ========================================== -->
+    <div class="modal fade" id="conn-selection" tabindex="-1" role="dialog"
+      aria-labelledby="confirmation" aria-hidden="true" style="top:20%">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: #0c2a57;">
+            <h5 class="modal-title " id="forgotPwdLabel" style="color: white;">Connection Creation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" style="color: white;">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body mt-2">
+            <div class="row">
+              <div class="col-md-6" style="text-align: center;">
+                <button type="button" class="btn btn-outline-dark" 
+                (click)="showNewConnForm('server')"
+                data-dismiss="modal">Connect to Server</button>
+              </div>
+              <div class="col-md-6" style="text-align: center;">
+                <button type="button" class="btn btn-outline-dark" 
+                (click)="showNewConnForm('path')"
+                data-dismiss="modal">Read From Local</button>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Background process</button>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  
+    <div *ngIf="showEstablishingConnection == false">
+      <mat-card-actions class="style-div">
+          <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+          <div [placement]="isDisabled ? 'left' : ''" [ngbTooltip]="isDisabled ? 'select existing connection and click next' : ''" >
+            <button id="connNext" mat-button matStepperNext class="btn btn-primary btn-sm" [disabled]="isDisabled" (click)="getReportFolderStructure()">Next</button>
+          </div> 
+  <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+      </mat-card-actions>
+    </div>

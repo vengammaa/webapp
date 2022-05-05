@@ -1,0 +1,29 @@
+.center-style-div {
+    height: 500px;
+    display: flex;
+    justify-content: center;
+}
+
+.section-height{
+    height: calc(100% - 60px);
+}
+
+.spinner-position {
+    top: 30%;
+}
+
+.p-position {
+    position: relative;
+    top: 40%;
+}
+
+.style-div {
+    margin-top: 5%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tree-table {
+    overflow-y: scroll;
+    height: 320px;
+  }

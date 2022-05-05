@@ -1,0 +1,1921 @@
+<section class="wrapper">
+  <div style="height: 45px;border-bottom: solid 1px #dae0e5;">
+    <div style="text-align: left;">
+      <ol class="breadcrumb h100 ">
+        <li class="breadcrumb-item text-color-brown font-weight-bold"><b>{{taskName}}</b></li>
+        <li *ngIf="showTaskInfo == false" class="breadcrumb-item text-color-brown font-weight-bold">
+          <b>{{reportName}}</b>
+        </li>
+        
+      </ol>
+      
+    </div>
+    <button class="btn btn-primary btn-sm generatePDF" (click)="downloadPDF()">Generate PDF</button>
+  </div>
+</section>
+
+
+<section class="">
+
+  <ul [hidden]="dataNotAvailable == true" class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#insights" role="tab" aria-controls="insights"
+        aria-selected="false">Insights</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " id="home-tab" data-toggle="tab" href="#task-details-tab" role="tab"
+        aria-controls="task-details-tab" aria-selected="true">Report Details</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#commonality" role="tab" aria-controls="commonality"
+        aria-selected="false">Commonality</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#universe" role="tab" aria-controls="universe"
+        aria-selected="false">Datasource Details</a>
+    </li>
+    <!-- <li class="nav-item">
+      <a class="nav-link" id="rpt-details-tab" data-toggle="tab" href="#rpt-details" role="tab" aria-controls="rpt-details"
+        aria-selected="false">Report Details</a>
+    </li> -->
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div  class="main-container fade tab-pane " id="task-details-tab" >
+      <div [hidden]="showTaskInfo == false" class="queryListTable">
+        <table  datatable id="workbook-details" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table row-border hover table-bordered text-center table-fixed p-1"  >
+          <thead class="headerBg">
+            <tr>
+              <th></th>
+              <th>Report Name</th>
+              <th>Folder Path</th>
+              <!-- <th>Universes</th> -->
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let w of workbookInfo">
+              <td>
+                &nbsp;<button class="badge badge-info btn-link" (click)="showWorksheets(w.workbookName)">View</button>
+              </td>
+              <td>{{w.workbookName}}</td>
+              <td>{{w.folderPath}}</td>
+              <!-- <td>{{w.universes}}</td> -->
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="reportDetailInfo()">Export</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+     
+      </div>
+
+      <div [hidden]="showWorkbookInfo == false" class="queryListTable">
+        <div class="backctn">
+          <button *ngIf="showTaskInfo == false" class="btn btn-sm btn-link" 
+          (click)="hideWorksheetDetails()">Back
+        </button>
+        </div>
+        <table  datatable id="task-details" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger4"
+          class="table row-border hover table-bordered text-center table-fixed p-1"  >
+          <thead class="headerBg">
+            <tr>
+              <!-- <th>ID</th> -->
+              <!-- <th>Report Analysis Id</th> -->
+              <th>Worksheet Id</th>
+              <th>Worksheet Name</th>
+              <!-- <th>Worksheet Type</th> -->
+              <th>Worksheet Creation Date</th>
+              <!-- <th>Worksheet Updated Date</th> -->
+              <!-- <th>Worksheet User</th> -->
+              <!-- <th>Worksheet Published</th> -->
+              <th>Worksheet Scheduled</th>
+              <th>Actively Used</th>
+              <!-- <th>Avg. Runtime</th> -->
+              <th>Folder Path</th>
+              <!-- <th>No Of Blocks</th> -->
+              <th>No Of Columns </th>
+              <!-- <th>No Of Conditional Blocks </th> -->
+              <!-- <th>No Of Failures</th> -->
+              <th>No Of Filters</th>
+              <th>No Of Formulas</th>
+              <!-- <th>No Of Instances</th> -->
+              <th>No Of Query</th>
+              <!-- <th>No Of Recurring Instances</th> -->
+              <!-- <th>No Of ReportPages</th> -->
+              <!-- <th>No Of Rows</th> -->
+              <!-- <th>No Of Tabs</th> -->
+              <!-- <th>No Of Variables</th> -->
+              <!-- <th>No Of Images</th> -->
+              <!-- <th>No Of Embedded Elements</th> -->
+              <!-- <th>Column names</th> -->
+              <th>Pivot Table Set</th>
+              <!-- <th>Query List</th> -->
+              <th>Chartset</th>
+              <th>Table ColumnMap</th>
+              <th>Table Set</th>
+              <!-- <th>Tab List</th> -->
+              <th>Total Size</th>
+              <th>Total Universe Count</th>
+              <!-- <th>Universe Id</th> -->
+              <th>Universe Name</th>
+              <th>Universe Path</th>
+              <th>Commonality Factor</th>
+              <th>Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of worksheetsStatusInfo">
+              <td>
+                <span>{{task.reportId}}</span>
+                &nbsp;<button class="badge badge-info btn-link" (click)="showReportInfo(task)">View</button>
+              </td>
+              <!-- <td>{{task.prjRptAnalysisId}}</td> -->
+              <!-- <td>{{task.reportId}}</td> -->
+              <td>{{task.reportName}}</td>
+              <!-- <td>{{task.reportType}}</td> -->
+              <td>{{task.reportCreationDate | slice:0:10}}</td>
+              <!-- <td>{{task.reportUpdatedDate | slice:0:10}}</td> -->
+              <!-- <td>{{task.reportUser}}</td> -->
+              <!-- <td>{{task.reportPublished}}</td> -->
+              <td>{{task.reportScheduled}}</td>
+              <td>{{task.activelyUsed}}</td>
+              <!-- <td>{{task.averageRunTime}}</td> -->
+              <td>{{task.folderPath}}</td>
+              <!-- <td>{{task.numberOfBlocks}}</td> -->
+              <td>{{task.numberOfColumns}}</td>
+              <!-- <td>{{task.numberOfConditionalBlocks}}</td> -->
+              <!-- <td>{{task.numberOfFailures}}</td> -->
+              <td>{{task.numberOfFilters}}</td>
+              <td>{{task.numberOfFormulas}}</td>
+              <!-- <td>{{task.numberOfInstances}}</td> -->
+              <td>{{task.numberOfQuery}}</td>
+              <!-- <td>{{task.numberOfRecurringInstances}}</td> -->
+              <!-- <td>{{task.numberOfReportPages}}</td> -->
+              <!-- <td>{{task.numberOfRows}}</td> -->
+              <!-- <td>{{task.numberOfTabs}}</td> -->
+              <!-- <td>{{task.numberOfVariables}}</td> -->
+              <!-- <td>{{task.numberOfImages}}</td> -->
+              <!-- <td>{{task.numberOfEmbeddedElements}}</td> -->
+              <!-- <td>{{task.columnNames  == '[]' ? '':task.columnNames}}</td> -->
+              <td>{{task.pivotTableSet}}</td>
+              <!-- <td>{{task.queryList}}</td> -->
+              <td>{{task.chartSet == '[]' ? '':task.chartSet }}</td>
+              <td>{{task.tableColumnMap}}</td>
+              <td>{{task.tableSet}}</td>
+              <!-- <td>{{task.tabList}}</td> -->
+              <td>{{task.totalSize}}</td>
+              <td>{{task.totalUniverseCount}}</td>
+              <!-- <td>{{task.universeId}}</td> -->
+              <td>{{task.universeName}}</td>
+              <td>{{task.universePath}}</td>
+              <td>{{task.commonalityFactor}}</td>
+              <td>{{task.complexity}}</td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button *ngIf="showWorkbookInfo" class="btn btn-primary btn-sm mt-2" style="display: inline-block;"
+      (click)="exportToExcel()">Export</button>
+
+      <div *ngIf="showWorkbookInfo || showTaskInfo">
+        <mat-card-actions  class="style-div">
+        <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+        <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+      <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+        </mat-card-actions>
+      </div>
+  <!-- ================================================= Report Details Section BO============================================ -->
+      <div *ngIf="showTaskInfo == false && showBOReport==true" class="ml-2">
+        <div class="backctn">
+          <button *ngIf="showTaskInfo == false" class="btn btn-sm btn-link" 
+          (click)="hideReportDetails()">Back
+        </button>
+        </div>
+      
+        <div *ngIf="dataObjectsAvailable == false" class="alert alert-primary">
+          <h6>Data Objects Not Available</h6>
+        </div>
+        <div *ngIf=" showTaskInfo == false && dataObjectsAvailable == true">
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showDataObjects == false"
+            (click)="showDataObjects = !showDataObjects"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showDataObjects == true"
+            (click)="showDataObjects = !showDataObjects"></i>
+          <h6 class="d-inline-block">&nbsp;Data Objects</h6>
+        </div>
+        <div *ngIf="showDataObjects == true" class="theight">
+          <table *ngIf="showTaskInfo == false && dataObjectsAvailable == true" class="table table-bordered">
+            <thead>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let element of reportData">
+                <tr>
+                  <td colspan="7">
+
+                    <i class="fa fa-caret-right mt-1 icon-size" *ngIf="element.expand == false"
+                      (click)="element.expand = true"></i>
+                    <i class="fa fa-caret-down icon-size" *ngIf="element.expand == true" style="font-size:22px;"
+                      (click)="element.expand = false"></i>
+                    {{element.name}}
+                  </td>
+                  <!-- <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td> -->
+
+                </tr>
+                <ng-container *ngIf="element.expand == true">
+                  <ng-container *ngIf="element.name == 'Dimensions'">
+                    <ng-container *ngFor="let item of element['data'];let i=index">
+                      <ng-container *ngIf="item.type == 'Columns'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandcolumn == false" class="fa fa-plus " aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            <i *ngIf="item.expandcolumn == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            {{item.type}}
+                          </td>
+                          <!-- <th *ngIf="item.expandcolumn == true">ID</th> -->
+                          <th *ngIf="item.expandcolumn == true">Column Name</th>
+                          <th *ngIf="item.expandcolumn == true">Column Description</th>
+                          <th *ngIf="item.expandcolumn == true">Data Type</th>
+                          <th *ngIf="item.expandcolumn == true">Column Expression</th>
+                          <th *ngIf="item.expandcolumn == true">Aggregation Function</th>
+
+                        </tr>
+                        <ng-container *ngIf="item.expandcolumn == true">
+                          <tr *ngFor="let col of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <!-- <td>{{col.columnId}}</td> -->
+                            <td>{{col.columnName}}</td>
+                            <td>{{col.columnDescription}}</td>
+                            <td>{{col.columnDataType}}</td>
+                            <td>{{col.columnExpression}}</td>
+                            <td>{{col.aggregateFunction}}</td>
+
+                          </tr>
+
+                        </ng-container>
+
+                      </ng-container>
+                      <ng-container *ngIf="item.type == 'Variables'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandvar == false" class="fa fa-plus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            <i *ngIf="item.expandvar == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            {{item.type}}
+                          </td>
+                          <!-- <th *ngIf="item.expandvar == true">ID</th> -->
+                          <th *ngIf="item.expandvar == true">Name</th>
+                          <th *ngIf="item.expandvar == true">Data type</th>
+                          <th *ngIf="item.expandvar == true">Definition</th>
+                          <!-- <th *ngIf="item.expandvar == true">Formula lang Id</th> -->
+
+                        </tr>
+                        <ng-container *ngIf="item.expandvar == true">
+                          <tr *ngFor="let var1 of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <!-- <td>{{var1.id}}</td> -->
+                            <td>{{var1.name}}</td>
+                            <td>{{var1.dataType}}</td>
+                            <td>{{var1.definition}}</td>
+                            <!-- <td>{{var1.formulaLanguageId}}</td> -->
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="element.expand == true">
+                  <ng-container *ngIf="element.name == 'Measures'">
+                    <ng-container *ngFor="let item of element['data'];let i=index">
+                      <ng-container *ngIf="item.type == 'Columns'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandcolumn == false" class="fa fa-plus" aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            <i *ngIf="item.expandcolumn == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            {{item.type}}
+                          </td>
+                          <th *ngIf="item.expandcolumn == true">Column Name</th>
+                          <th *ngIf="item.expandcolumn == true">Column Description</th>
+                          <th *ngIf="item.expandcolumn == true">Data Type</th>
+                          <th *ngIf="item.expandcolumn == true">Column Expression</th>
+                          <th *ngIf="item.expandcolumn == true">Aggregation Function</th>
+                        </tr>
+                        <ng-container *ngIf="item.expandcolumn == true">
+                          <tr *ngFor="let col of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <td>{{col.columnName}}</td>
+                            <td>{{col.columnDescription}}</td>
+                            <td>{{col.columnDataType}}</td>
+                            <td>{{col.columnExpression}}</td>
+                            <td>{{col.aggregateFunction}}</td>
+                          </tr>
+
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="item.type == 'Variables'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandvar == false" class="fa fa-plus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            <i *ngIf="item.expandvar == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            {{item.type}}
+                          </td>
+                          <!-- <th *ngIf="item.expandvar == true">ID</th> -->
+                          <th *ngIf="item.expandvar == true">Name</th>
+                          <th *ngIf="item.expandvar == true">Data type</th>
+                          <th *ngIf="item.expandvar == true">Definition</th>
+                          <!-- <th *ngIf="item.expandvar == true">Formula lang Id</th> -->
+                        </tr>
+                        <ng-container *ngIf="item.expandvar == true">
+                          <tr *ngFor="let var1 of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <!-- <td>{{var1.id}}</td> -->
+                            <td>{{var1.name}}</td>
+                            <td>{{var1.dataType}}</td>
+                            <td>{{var1.definition}}</td>
+                            <!-- <td>{{var1.formulaLanguageId}}</td> -->
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="element.expand == true">
+                  <ng-container *ngIf="element.name == 'Attributes'">
+                    <ng-container *ngFor="let item of element['data'];let i=index">
+                      <ng-container *ngIf="item.type == 'Columns'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandcolumn == false" class="fa fa-plus" aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            <i *ngIf="item.expandcolumn == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            {{item.type}}
+                          </td>
+                          <th *ngIf="item.expandcolumn == true">ID</th>
+                          <th *ngIf="item.expandcolumn == true">Column Name</th>
+                          <th *ngIf="item.expandcolumn == true">Data Type</th>
+                          <th *ngIf="item.expandcolumn == true">Column Expression</th>
+                          <th *ngIf="item.expandcolumn == true">Query Name</th>
+                        </tr>
+                        <ng-container *ngIf="item.expandcolumn == true">
+                          <tr *ngFor="let col of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <td>{{col.columnId}}</td>
+                            <td>{{col.columnName}}</td>
+                            <td>{{col.columnDataType}}</td>
+                            <td>{{col.columnExpression}}</td>
+                            <td>{{col.queryName}}</td>
+                          </tr>
+
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="item.type == 'Variables'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandvar == false" class="fa fa-plus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            <i *ngIf="item.expandvar == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            {{item.type}}
+                          </td>
+                          <th *ngIf="item.expandvar == true">ID</th>
+                          <th *ngIf="item.expandvar == true">Name</th>
+                          <th *ngIf="item.expandvar == true">Data type</th>
+                          <th *ngIf="item.expandvar == true">Definition</th>
+                          <th *ngIf="item.expandvar == true">Formula lang Id</th>
+                        </tr>
+                        <ng-container *ngIf="item.expandvar == true">
+                          <tr *ngFor="let var1 of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <td>{{var1.id}}</td>
+                            <td>{{var1.name}}</td>
+                            <td>{{var1.dataType}}</td>
+                            <td>{{var1.definition}}</td>
+                            <td>{{var1.formulaLanguageId}}</td>
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <div *ngIf="showTaskInfo == false && reportObjectAvailable == false" class="alert alert-primary">
+          <h6>Report Objects Not available</h6>
+        </div>
+        <div *ngIf="showTaskInfo == false && reportObjectAvailable == true" >
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showReportObject == false"
+            (click)="showReportObject = !showReportObject"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showReportObject == true"
+            (click)="showReportObject = !showReportObject"></i>
+          <h6  class="d-inline-block">&nbsp;Report Objects
+          </h6>
+        </div>
+        <div *ngIf="showReportObject == true" class="theight">
+          <table *ngIf="showTaskInfo == false && reportObjectAvailable == true" class="table table-bordered">
+            <thead>
+              <th>Report Table Name</th>
+              <th>BO Table Type </th>
+              <th>BO Table Name </th>
+              <th>BO Table Columns</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let data of tabList">
+                <ng-container *ngIf="data.boTableElements">                                  
+                  <ng-container *ngFor="let t of data.boTableElements">                    
+                   <tr>
+                      <td>{{data.reportTabName}}</td>  
+                      <td>{{t.tableType}}</td>
+                      <td>{{t.tableName}}</td>
+                      <td>{{t.numberOfColumns}}</td>
+                   </tr> 
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <div *ngIf="showTaskInfo == false && queryListAvailable == false" class="alert alert-primary">
+          <h6>Query List Not Available</h6>
+        </div>
+        <div *ngIf="showTaskInfo == false && queryListAvailable == true" >
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showQueryList == false"
+            (click)="showQueryList = !showQueryList"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showQueryList == true"
+            (click)="showQueryList = !showQueryList"></i>
+          <h6 class="d-inline-block">&nbsp;Query List &nbsp;
+          </h6>
+        </div>
+          <div class="theight" *ngIf="showQueryList == true">
+            <table *ngIf="showTaskInfo == false && queryListAvailable == true " class="table table-bordered">
+              <thead>
+                <th></th>
+                <th>Query Name</th>
+                <th>Query</th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of queryList;let i=index">
+                  <td>{{i+1}}</td>
+                  <td>{{data.queryName}}</td>
+                  <td colspan="3">
+                    <table>                
+                        <tr *ngIf="data.query != null">
+                          <td colspan="12">{{data.query}}</td>                    
+                        </tr>
+                        <tr *ngFor="let queryStatement of data.queryStatements">
+                          <td colspan="12">{{queryStatement}}</td>
+                        </tr>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+        <hr/>
+        <div *ngIf="showTaskInfo == false && exceptionRptAvailable == false" class="alert alert-primary">
+          <h6>Exception Report Not Available</h6>
+        </div>
+        <div *ngIf="showTaskInfo == false && exceptionRptAvailable == true" >
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showExceptionReport == false"
+            (click)="showExceptionReport = !showExceptionReport"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showExceptionReport == true"
+            (click)="showExceptionReport = !showExceptionReport"></i>
+          <h6 class="d-inline-block">&nbsp;Exception Report &nbsp;
+          </h6>
+        </div>
+        <div class="theight" *ngIf="showExceptionReport == true">
+          <table class="table table-bordered">
+            <thead>
+              <th>Exceptions</th>
+            </thead>
+            <tbody>
+              <tr >
+                <td >{{exceptionReport}}</td>
+               
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button
+        *ngIf="showTaskInfo == false && (queryListAvailable == true || reportObjectAvailable == true|| exceptionRptAvailable == true) "
+        class="btn btn-primary btn-sm mt-2" style="display: inline-block;"
+        (click)="exportReportDetails()">Export</button>
+        <div *ngIf="showTaskInfo == false && (queryListAvailable == true || reportObjectAvailable == true|| exceptionRptAvailable == true) ">
+          <mat-card-actions  class="style-div">
+          <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+          <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+        <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+          </mat-card-actions>
+        </div>
+      </div>
+
+      <!-- ================================================= Report Details Section Tableau============================================ -->
+      <div *ngIf="showWorkbookInfo == false && showTableauReport==true && showTaskInfo==false" class="ml-2">
+        <div class="backctn">
+          <button *ngIf="showWorkbookInfo == false && showTaskInfo==false" class="btn btn-sm btn-link" 
+          (click)="hideTableauReportDetails()">Back
+        </button>
+        </div>
+      
+        <div *ngIf="dataObjectsAvailable == false" class="alert alert-primary">
+          <h6>Data Objects Not Available</h6>
+        </div>
+        <div *ngIf=" showWorkbookInfo == false && dataObjectsAvailable == true && showTaskInfo==false">
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showDataObjects == false"
+            (click)="showDataObjects = !showDataObjects"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showDataObjects == true"
+            (click)="showDataObjects = !showDataObjects"></i>
+          <h6 class="d-inline-block">&nbsp;Data Objects</h6>
+        </div>
+        <div *ngIf="showDataObjects == true" class="theight">
+          <table *ngIf="showWorkbookInfo == false && dataObjectsAvailable == true && showTaskInfo==false" class="table table-bordered">
+            <thead>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let element of reportData">
+                <tr>
+                  <td colspan="7">
+
+                    <i class="fa fa-caret-right mt-1 icon-size" *ngIf="element.expand == false"
+                      (click)="element.expand = true"></i>
+                    <i class="fa fa-caret-down icon-size" *ngIf="element.expand == true" style="font-size:22px;"
+                      (click)="element.expand = false"></i>
+                    {{element.name}}
+                  </td>
+                  <!-- <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td> -->
+
+                </tr>
+                <ng-container *ngIf="element.expand == true">
+                  <ng-container *ngIf="element.name == 'Dimensions'">
+                    <ng-container *ngFor="let item of element['data'];let i=index">
+                      <ng-container *ngIf="item.type == 'Columns'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandcolumn == false" class="fa fa-plus " aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            <i *ngIf="item.expandcolumn == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            {{item.type}}
+                          </td>
+                          <!-- <th *ngIf="item.expandcolumn == true">ID</th> -->
+                          <th *ngIf="item.expandcolumn == true">Column Name</th>
+                          <th *ngIf="item.expandcolumn == true">Column Type</th>
+                          <th *ngIf="item.expandcolumn == true">Data Type</th>
+                          <th *ngIf="item.expandcolumn == true">Column Expression</th>
+                          <th *ngIf="item.expandcolumn == true">Aggregation Function</th>
+
+                        </tr>
+                        <ng-container *ngIf="item.expandcolumn == true">
+                          <tr *ngFor="let col of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <!-- <td>{{col.columnId}}</td> -->
+                            <td>{{col.columnName}}</td>
+                            <td>{{col.columnType}}</td>
+                            <td>{{col.columnDataType}}</td>
+                            <td>{{col.columnExpression}}</td>
+                            <td>{{col.aggregateFunction}}</td>
+
+                          </tr>
+
+                        </ng-container>
+
+                      </ng-container>
+                      <ng-container *ngIf="item.type == 'Variables'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandvar == false" class="fa fa-plus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            <i *ngIf="item.expandvar == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            {{item.type}}
+                          </td>
+                          <!-- <th *ngIf="item.expandvar == true">ID</th> -->
+                          <th *ngIf="item.expandvar == true">Name</th>
+                          <th *ngIf="item.expandvar == true">Data type</th>
+                          <th *ngIf="item.expandvar == true">Definition</th>
+                          <th *ngIf="item.expandvar == true">Class name</th>
+                          <!-- <th *ngIf="item.expandvar == true">Formula lang Id</th> -->
+
+                        </tr>
+                        <ng-container *ngIf="item.expandvar == true">
+                          <tr *ngFor="let var1 of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <!-- <td>{{var1.id}}</td> -->
+                            <td>{{var1.name}}</td>
+                            <td>{{var1.dataType}}</td>
+                            <td>{{var1.definition}}</td>
+                            <td>{{var1.className}}</td>
+                            <!-- <td>{{var1.formulaLanguageId}}</td> -->
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="element.expand == true">
+                  <ng-container *ngIf="element.name == 'Measures'">
+                    <ng-container *ngFor="let item of element['data'];let i=index">
+                      <ng-container *ngIf="item.type == 'Columns'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandcolumn == false" class="fa fa-plus" aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            <i *ngIf="item.expandcolumn == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            {{item.type}}
+                          </td>
+                          <th *ngIf="item.expandcolumn == true">Column Name</th>
+                          <th *ngIf="item.expandcolumn == true">Column Type</th>
+                          <th *ngIf="item.expandcolumn == true">Data Type</th>
+                          <th *ngIf="item.expandcolumn == true">Column Expression</th>
+                          <th *ngIf="item.expandcolumn == true">Aggregation Function</th>
+                        </tr>
+                        <ng-container *ngIf="item.expandcolumn == true">
+                          <tr *ngFor="let col of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <td>{{col.columnName}}</td>
+                            <td>{{col.columnType}}</td>
+                            <td>{{col.columnDataType}}</td>
+                            <td>{{col.columnExpression}}</td>
+                            <td>{{col.aggregateFunction}}</td>
+                          </tr>
+
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="item.type == 'Variables'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandvar == false" class="fa fa-plus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            <i *ngIf="item.expandvar == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandvar = !item.expandvar"></i>
+                            {{item.type}}
+                          </td>
+                          <!-- <th *ngIf="item.expandvar == true">ID</th> -->
+                          <th *ngIf="item.expandvar == true">Name</th>
+                          <th *ngIf="item.expandvar == true">Data type</th>
+                          <th *ngIf="item.expandvar == true">Definition</th>
+                          <th *ngIf="item.expandvar == true">Class name</th>
+                          <!-- <th *ngIf="item.expandvar == true">Formula lang Id</th> -->
+                        </tr>
+                        <ng-container *ngIf="item.expandvar == true">
+                          <tr *ngFor="let var1 of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <!-- <td>{{var1.id}}</td> -->
+                            <td>{{var1.name}}</td>
+                            <td>{{var1.dataType}}</td>
+                            <td>{{var1.definition}}</td>
+                            <td>{{var1.className}}</td>
+                            <!-- <td>{{var1.formulaLanguageId}}</td> -->
+                          </tr>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <div *ngIf="showWorkbookInfo == false && reportObjectAvailable == false && showTaskInfo==false" class="alert alert-primary">
+          <h6>Report Objects Not available</h6>
+        </div>
+        <div *ngIf="showWorkbookInfo == false && reportObjectAvailable == true && showTaskInfo==false" >
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showReportObject == false"
+            (click)="showReportObject = !showReportObject"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showReportObject == true"
+            (click)="showReportObject = !showReportObject"></i>
+          <h6  class="d-inline-block">&nbsp;Report Objects
+          </h6>
+        </div>
+        <div *ngIf="showReportObject == true" class="theight">
+          <table *ngIf="showWorkbookInfo == false && reportObjectAvailable == true && showTaskInfo==false" class="table table-bordered">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Tableau Table Name</th>
+                <th>Tableau Table Caption</th>
+                <th>No. of Columns</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let data of tabList">
+                <ng-container *ngIf="data.tableauTableElements">                                  
+                  <ng-container *ngFor="let t of data.tableauTableElements; let i=index;">                    
+                   <tr>
+                    <td>{{i+1}}</td>
+                    <td>
+                      <i class="fa fa-chevron-right mt-1 " *ngIf="tableauExpandColumn == false"
+                      (click)="tableauExpandColumn = true"></i>
+                     <i class="fa fa-chevron-down" *ngIf="tableauExpandColumn == true" 
+                      (click)="tableauExpandColumn = false"></i>
+                      {{t.tableName}}
+                    </td>
+                    <td>{{t.caption}}</td>
+                    <td>{{t.numberOfColumns}}</td>
+                   </tr> 
+                   <ng-container *ngIf="tableauExpandColumn == true">
+                    <tr>
+                      <td></td>
+                      <td>
+                        <i *ngIf="tableauExpandTable == false" class="fa fa-plus " aria-hidden="true"
+                          (click)="tableauExpandTable = !tableauExpandTable"></i>
+                        <i *ngIf="tableauExpandTable == true" class="fa fa-minus" aria-hidden="true"
+                          (click)="tableauExpandTable = !tableauExpandTable"></i>
+                        Column Instance
+                      </td>
+                      <th *ngIf="tableauExpandTable == true">Column</th>
+                      <th *ngIf="tableauExpandTable == true">Column Name </th>
+                      <th *ngIf="tableauExpandTable == true">Derivation</th>
+                      <th *ngIf="tableauExpandTable == true">Pivot</th>
+                      <th *ngIf="tableauExpandTable == true">Type</th>
+                    </tr>
+                    <ng-container *ngIf="tableauExpandTable == true">
+                      <tr *ngFor="let col of t.columnInstance">
+                        <td></td>
+                        <td></td>
+                        <td>{{col.column}}</td>
+                        <td>{{col.columnName}}</td>
+                        <td>{{col.derivation}}</td>
+                        <td>{{col.pivot}}</td>
+                        <td>{{col.type}}</td>
+                      </tr>
+
+                    </ng-container>
+                   </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+
+              <!-- <ng-container *ngFor="let element of columnInstanceData">
+                <tr>
+                  <td></td>
+                  <td>
+                    <i class="fa fa-caret-right mt-1 icon-size" *ngIf="element.expand == false"
+                      (click)="element.expand = true"></i>
+                    <i class="fa fa-caret-down icon-size" *ngIf="element.expand == true" style="font-size:22px;"
+                      (click)="element.expand = false"></i>
+                    {{element.name}}
+                  </td>
+                </tr>
+                <ng-container *ngIf="element.expand == true">
+                  <ng-container *ngIf="element.name == 'columnInstance'">
+                    <ng-container *ngFor="let item of element['data'];let i=index">
+                      <ng-container *ngIf="item.type == 'Columns'">
+                        <tr>
+                          <td></td>
+                          <td>
+                            <i *ngIf="item.expandcolumn == false" class="fa fa-plus " aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            <i *ngIf="item.expandcolumn == true" class="fa fa-minus" aria-hidden="true"
+                              (click)="item.expandcolumn = !item.expandcolumn"></i>
+                            {{item.type}}
+                          </td>
+                          <th *ngIf="item.expandcolumn == true">Column</th>
+                          <th *ngIf="item.expandcolumn == true">Column Name</th>
+                          <th *ngIf="item.expandcolumn == true">Derivation</th>
+                          <th *ngIf="item.expandcolumn == true">Pivot</th>
+                          <th *ngIf="item.expandcolumn == true">Type</th>
+
+                        </tr>
+                        <ng-container *ngIf="item.expandcolumn == true">
+                          <tr *ngFor="let col of item['list'];let i=index">
+                            <td></td>
+                            <td></td>
+                            <td>{{col.column}}</td>
+                            <td>{{col.columnName}}</td>
+                            <td>{{col.derivation}}</td>
+                            <td>{{col.pivot}}</td>
+                            <td>{{col.type}}</td>
+
+                          </tr>
+
+                        </ng-container>
+
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container> -->
+
+            </tbody>
+          </table>
+        </div>
+
+        <hr />
+        <div *ngIf="showWorkbookInfo == false && reportObjectAvailable == false && showTaskInfo==false" class="alert alert-primary">
+          <h6>Report Objects Not available</h6>
+        </div>
+        <div *ngIf="showWorkbookInfo == false && reportObjectAvailable == true && showTaskInfo==false" >
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showQueryFilters == false"
+            (click)="showQueryFilters = !showQueryFilters"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showQueryFilters == true"
+            (click)="showQueryFilters = !showQueryFilters"></i>
+          <h6  class="d-inline-block">&nbsp;Query Filters
+          </h6>
+        </div>
+        <div *ngIf="showQueryFilters == true" class="theight">
+          <table *ngIf="showWorkbookInfo == false && reportObjectAvailable == true && showTaskInfo==false" class="table table-bordered">
+            <thead>
+              <th>Class Name</th>
+              <th>Column </th>
+              <th>Context</th>
+              <th>Filter Group</th>
+              <th>Kind</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let data of tabList">
+                <ng-container *ngIf="data.queryFilters">                                  
+                  <ng-container *ngFor="let t of data.queryFilters">                    
+                   <tr>
+                      <td>{{t.className}}</td>  
+                      <td>{{t.column}}</td>
+                      <td>{{t.context}}</td>
+                      <td>{{t.filterGroup}}</td>
+                      <td>{{t.kind}}</td>
+                   </tr> 
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+        <button
+        *ngIf="showWorkbookInfo == false && (queryListAvailable == true || reportObjectAvailable == true|| exceptionRptAvailable == true) && showTaskInfo==false"
+        class="btn btn-primary btn-sm mt-2" style="display: inline-block;"
+        (click)="exportReportDetailsTableau()">Export</button>
+        <div *ngIf="showWorkbookInfo == false && (queryListAvailable == true || reportObjectAvailable == true|| exceptionRptAvailable == true) && showTaskInfo==false">
+          <mat-card-actions  class="style-div">
+          <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+          <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+        <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+          </mat-card-actions>
+        </div>
+      </div>
+
+       <!-- ================================================= Report Details Section Cognos============================================ -->
+       <div *ngIf="showTaskInfo == false && showCognosReport==true" class="ml-2">
+        <div class="backctn">
+          <button *ngIf="showTaskInfo == false" class="btn btn-sm btn-link" 
+          (click)="hideReportDetails()">Back
+        </button>
+        </div>
+        <div *ngIf="showTaskInfo == false && reportObjectAvailable == false" class="alert alert-primary">
+          <h6>Report Objects Not available</h6>
+        </div>
+        <div *ngIf="showTaskInfo == false && reportObjectAvailable == true" >
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showReportObject == false"
+            (click)="showReportObject = !showReportObject"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showReportObject == true"
+            (click)="showReportObject = !showReportObject"></i>
+          <h6  class="d-inline-block">&nbsp;Report Objects
+          </h6>
+        </div>
+        <div *ngIf="showReportObject == true" class="theight">
+          <table *ngIf="showTaskInfo == false && reportObjectAvailable == true" class="table table-bordered">
+            <thead>
+              <th>Report Table Name</th>
+              <th>Report Table Columns</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let data of tableSet;let i=index">
+                <ng-container *ngFor="let m of data.columnNames">
+                  <tr>
+                    <td>{{data.tableName}}</td>
+                    <td>{{m}}</td>
+                  </tr>
+                </ng-container>
+                
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <div *ngIf="showTaskInfo == false && queryListAvailable == false" class="alert alert-primary">
+          <h6>Query List Not Available</h6>
+        </div>
+        <div *ngIf="showTaskInfo == false && queryListAvailable == true" >
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showQueryList == false"
+            (click)="showQueryList = !showQueryList"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showQueryList == true"
+            (click)="showQueryList = !showQueryList"></i>
+          <h6 class="d-inline-block">&nbsp;Query List &nbsp;
+          </h6>
+        </div>
+          <div class="theight" *ngIf="showQueryList == true">
+            <table *ngIf="showTaskInfo == false && queryListAvailable == true " class="table table-bordered">
+              <thead>
+                <th></th>
+                <th>Query Name</th>
+              </thead>
+                <tbody>
+                  <ng-container *ngFor="let m of queryListCognos;let i=index">
+                  <tr>
+                  <td>{{i+1}}</td>
+                  <td colspan="3">
+                    <i class="fa fa-chevron-right mt-1 " *ngIf="m.expand == false"
+                    (click)="m.expand = true"></i>
+                   <i class="fa fa-chevron-down" *ngIf="m.expand == true" 
+                    (click)="m.expand = false"></i>
+                    {{m.queryName}}
+                  </td> 
+                </tr>
+                <ng-container *ngIf="m.expand == true">
+                  <ng-container *ngFor="let element of queryListCognosDataFilter">
+                    <ng-container *ngIf="element.name == 'QueryData'">
+                      <ng-container *ngFor="let item of element['data'];let i=index">
+                        <ng-container *ngIf="item.type == 'QueryData'">
+                          <tr>
+                            <td></td>
+                            <td>
+                              <i *ngIf="item.expandcolumn == false" class="fa fa-plus " aria-hidden="true"
+                                (click)="item.expandcolumn = !item.expandcolumn"></i>
+                              <i *ngIf="item.expandcolumn == true" class="fa fa-minus" aria-hidden="true"
+                                (click)="item.expandcolumn = !item.expandcolumn"></i>
+                              {{item.type}}
+                            </td>
+                            <!-- <th *ngIf="item.expandcolumn == true">ID</th> -->
+                            <th *ngIf="item.expandcolumn == true">Aggregate</th>
+                            <th *ngIf="item.expandcolumn == true">Expression</th>
+                            <th *ngIf="item.expandcolumn == true">Name</th>
+                            <th *ngIf="item.expandcolumn == true">Roll Up Aggregate</th>
+                            <th *ngIf="item.expandcolumn == true">Sort</th>
+  
+                          </tr>
+                          <ng-container *ngIf="item.expandcolumn == true">
+                            <tr *ngFor="let col of item['list'];let i=index">
+                              <td></td>
+                              <td></td>
+                              <!-- <td>{{col.columnId}}</td> -->
+                              <td>{{col.aggregate}}</td>
+                              <td>{{col.expression}}</td>
+                              <td>{{col.name}}</td>
+                              <td>{{col.rollupAggregate}}</td>
+                              <td>{{col.sort}}</td>
+                            </tr>
+  
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+
+                    </ng-container>
+
+
+                    <ng-container *ngIf="element.name == 'FilterData'">
+                      <ng-container *ngFor="let item of element['data'];let i=index">
+                        <ng-container *ngIf="item.type == 'FilterData'">
+                          <tr>
+                            <td></td>
+                            <td>
+                              <i *ngIf="item.expandcolumn == false" class="fa fa-plus " aria-hidden="true"
+                                (click)="item.expandcolumn = !item.expandcolumn"></i>
+                              <i *ngIf="item.expandcolumn == true" class="fa fa-minus" aria-hidden="true"
+                                (click)="item.expandcolumn = !item.expandcolumn"></i>
+                              {{item.type}}
+                            </td>
+                            <!-- <th *ngIf="item.expandcolumn == true">ID</th> -->
+                            <th *ngIf="item.expandcolumn == true">Filter Expression</th>
+                            <th *ngIf="item.expandcolumn == true">Filter Name</th>
+                            <th *ngIf="item.expandcolumn == true">Filter Value</th>
+                            <th *ngIf="item.expandcolumn == true">Filter Operator</th>
+                            <th *ngIf="item.expandcolumn == true">Post Auto Aggregation</th>
+                            <th *ngIf="item.expandcolumn == true">Use</th>
+                        
+  
+                          </tr>
+                          <ng-container *ngIf="item.expandcolumn == true">
+                            <tr *ngFor="let col of item['list'];let i=index">
+                              <td></td>
+                              <td></td>
+                              <!-- <td>{{col.columnId}}</td> -->
+                              <td>{{col.filterExpression}}</td>
+                              <td>{{col.filterName}}</td>
+                              <td>{{col.filterValue}}</td>
+                              <td>{{col.filterOperator}}</td>
+                              <td>{{col.postAutoAggregation}}</td>
+                              <td>{{col.use}}</td>
+                        
+                            </tr>
+  
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+
+                    </ng-container>
+
+                  </ng-container>
+                  
+                </ng-container>
+
+                </ng-container>
+
+                </tbody>
+                    </table>
+        </div>
+        <hr/>
+        <div *ngIf="showTaskInfo == false && exceptionRptAvailable == false" class="alert alert-primary">
+          <h6>Exception Report Not Available</h6>
+        </div>
+        <div *ngIf="showTaskInfo == false && exceptionRptAvailable == true" >
+          <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showExceptionReport == false"
+            (click)="showExceptionReport = !showExceptionReport"></i>
+          <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showExceptionReport == true"
+            (click)="showExceptionReport = !showExceptionReport"></i>
+          <h6 class="d-inline-block">&nbsp;Exception Report &nbsp;
+          </h6>
+        </div>
+        <div class="theight" *ngIf="showExceptionReport == true">
+          <table class="table table-bordered">
+            <thead>
+              <th>Exceptions</th>
+            </thead>
+            <tbody>
+              <tr >
+                <td >{{exceptionReport}}</td>
+               
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button
+        *ngIf="showTaskInfo == false && (queryListAvailable == true || reportObjectAvailable == true || dataObjectsAvailable == true || exceptionRptAvailable == true) "
+        class="btn btn-primary btn-sm mt-2" style="display: inline-block;"
+        (click)="exportReportDetailsCognos()">Export</button>
+        <div *ngIf="showTaskInfo == false && (queryListAvailable == true || reportObjectAvailable == true || dataObjectsAvailable == true || exceptionRptAvailable == true) ">
+          <mat-card-actions  class="style-div">
+          <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+          <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+        <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+          </mat-card-actions>
+        </div>
+      </div> 
+    </div>
+<!-- =================================================Commonality ========================================== -->
+    <div class="main-container fade tab-pane fade" id="commonality">
+      <div class="queryListTable ">
+        <table  id="commonality-details" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"
+          class="table row-border hover table-bordered text-center table-fixed p-1">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Report 1 Id</th>
+              <th>Report 1 Name</th>
+              <th>Report 2 Id</th>
+              <th>Report 2 Name</th>
+              <th>Commonality</th>
+              <th>Identical</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of commonalityData">
+              <td>{{data.id}}</td>
+              <td>{{data.analysisReport1.id}}</td>
+              <td>{{data['analysisReport1'].reportName}}</td>
+              <td>{{data.analysisReport2.id}}</td>
+              <td>{{data['analysisReport2'].reportName}}</td>
+              <td>{{data.commonality}} %</td>
+              <td>{{data.identical}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button *ngIf="showTaskInfo" class="btn btn-primary btn-sm mt-2" style="display: inline-block;"
+      (click)="exportToExcel()">Export</button>
+      <div>
+        <mat-card-actions  class="style-div">
+        <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+        <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+      <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+        </mat-card-actions>
+      </div>
+    </div>
+<!-- ================================================= Insights ============================================= -->
+    <div class="tab-pane fade show active main-container" id="insights" role="tabpanel" aria-labelledby="insights-tab">
+      <div class="ml-2" id="charts" #charts>
+        <charts [taskDetails]=taskStatusInfo [commanalityData]=commonalityData></charts>
+      </div>
+      <div>
+        <mat-card-actions  class="style-div">
+        <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+        <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+      <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+        </mat-card-actions>
+      </div>
+    </div>
+<!-- ================================================= Universe ============================================= -->
+    <div class="main-container fade tab-pane fade" id="universe">
+<!-- ================================================= Universe List ======================================== -->
+      <div [hidden]="showUniverseTable == false" class="mt-2 ml-2">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2"
+        class="table row-border hover table-bordered text-center table-fixed p-1">
+          <thead>
+            <tr>
+              <th>Datasource ID</th>
+              <th>Project Analysis Id</th>
+              <th>Name</th>
+              <th>Description</th>       
+            </tr>                
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of universeData">
+              <td>
+               <span>{{data.universeSourceId}} </span>
+               &nbsp;<button class="badge badge-info btn-link" (click)="showUniverseObjects(data)">View</button>
+                <!-- <a (click)=showUniverseObjects(data)>{{data.universeSourceId}} 
+
+                </a>  -->
+              </td>
+              <td>{{data.prjRptAnalysisId}}</td>
+              <td>{{data.name}}</td>
+              <td>{{data.description}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn btn-primary btn-sm ml-1" (click)="exportUniverseList()">Export</button>
+        <div>
+          <mat-card-actions  class="style-div">
+          <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+          <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+      <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+          </mat-card-actions>
+        </div>
+      </div>
+      
+<!-- ================================================= Universe Details ======================================== -->
+      <div *ngIf="showUniverseTable == false && showBOUniverse==true">
+        <div class="backctn">
+          <button 
+          class="btn btn-sm btn-link" 
+          (click)="hideUnvObjects()">Back
+        </button>
+        </div>
+        <div class="ml-1 mt-2 theight">  
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFolders == false"
+            (click)="showUnvFolders = !showUnvFolders"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFolders == true"
+            (click)="showUnvFolders = !showUnvFolders"></i>
+            <h6 class="ml-1 d-inline-block"> Folders </h6>
+          </div>      
+         
+          <table class="table table-bordered" *ngIf="showUnvFolders == true">
+            <thead>
+              <th>Name</th>
+              <th>Path</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeFolders;let i=index">
+                <tr>
+                    <td>{{m.name}}</td>
+                    <td>{{m.path}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="ml-1 theight">
+          <div >
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvMeasures == false"
+            (click)="showUnvMeasures = !showUnvMeasures"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvMeasures == true"
+            (click)="showUnvMeasures = !showUnvMeasures"></i>
+            <h6 class="ml-1 d-inline-block"> Measures </h6>
+          </div>
+          <!-- path,name,seect,projectionfun,datatype,iused,where -->
+          <table class="table table-bordered" *ngIf="showUnvMeasures == true">
+            <thead>
+              <th>Path</th>
+              <th>Name</th>
+              <th>Formula</th>
+              <th>Data Type</th>              
+              <th>Where</th>
+              <th>Is Used</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeMeasures;let i=index">
+                <tr>
+                   <td>{{m.path}}</td>
+                    <td>{{m.name}}</td>
+                    <td>{{m.select}}</td>
+                    <td>{{m.dataType}}</td>                    
+                    <td>{{m.where}}</td>
+                    <td>{{m.isUsed}}</td> 
+                   
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvDimensions == false"
+            (click)="showUnvDimensions = !showUnvDimensions"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvDimensions == true"
+            (click)="showUnvDimensions = !showUnvDimensions"></i>
+            <h6 class="ml-1 d-inline-block"> Dimensions </h6>
+          </div>       
+         
+         
+          <table class="table table-bordered" *ngIf="showUnvDimensions == true">
+            <thead>
+              <th>Path</th>
+              <th>Name</th>
+              <th>Formula</th>
+              <th>Data Type</th>              
+              <th>Where</th>
+              <th>Is Used</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeDimensions;let i=index">
+                <tr>
+                    <td>{{m.path}}</td>
+                    <td>{{m.name}}</td>
+                    <td>{{m.select}}</td>
+                    <td>{{m.dataType}}</td>                    
+                    <td>{{m.where}}</td>                   
+                    <td>{{m.isUsed}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvAttributes == false"
+            (click)="showUnvAttributes = !showUnvAttributes"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvAttributes == true"
+            (click)="showUnvAttributes = !showUnvAttributes"></i>
+            <h6 class="ml-1 d-inline-block"> Attributes </h6>
+          </div>       
+         
+          <table class="table table-bordered" *ngIf="showUnvAttributes == true">
+            <thead>
+              <th>Path</th>
+              <th>Name</th>
+              <th>Formula</th>
+              <th>Data Type</th>              
+              <th>Where</th>
+              <th>Is Used</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeAttributes;let i=index">
+                <tr>
+                    <td>{{m.path}}</td>
+                    <td>{{m.name}}</td>
+                    <td>{{m.select}}</td>
+                    <td>{{m.dataType}}</td>                    
+                    <td>{{m.where}}</td>                    
+                    <td>{{m.isUsed}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+       
+        <div class="ml-1 theight">       
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFilters == false"
+            (click)="showUnvFilters = !showUnvFilters"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFilters == true"
+            (click)="showUnvFilters = !showUnvFilters"></i>
+            <h6 class="ml-1 d-inline-block"> Filters </h6>
+          </div>       
+         
+          <table class="table table-bordered" *ngIf="showUnvFilters == true">
+            <thead>
+              <th>Path</th>
+              <th>Name</th>
+              <th>Where</th>              
+              <th>Is Used</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeFilters;let i=index">
+                <tr>
+                    <td>{{m.path}}</td>
+                    <td>{{m.name}}</td>
+                    <td>{{m.where}}</td>                   
+                    <td>{{m.isUsed}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table> 
+        </div>
+        <hr/>
+        
+       
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvTables == false"
+            (click)="showUnvTables = !showUnvTables"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvTables == true"
+            (click)="showUnvTables = !showUnvTables"></i>
+            <h6 class="ml-1 d-inline-block"> Tables </h6>
+          </div>  
+         
+          <table class="table table-bordered" *ngIf="showUnvTables == true">
+            <thead>
+              <th>Table Name</th>
+              <th>Column Name</th>
+              <th>Data Type</th>
+              <th>Is Used</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeTable;let i=index">
+                <tr>
+                    <td colspan="3">
+                      <i class="fa fa-chevron-right mt-1 " *ngIf="m.expand == false"
+                      (click)="m.expand = true"></i>
+                     <i class="fa fa-chevron-down" *ngIf="m.expand == true" 
+                      (click)="m.expand = false"></i>
+                      {{m.name}}
+                    </td>
+                    <td>
+                      {{m.isUsed}}
+                    </td>
+                </tr>
+              <ng-container *ngIf="m.expand == true">
+                <tr *ngFor="let columns of m.columns">
+                  <td></td>
+                  <td>{{columns.name}}</td>
+                  <td>{{columns.dataType}}</td>
+                  <td>{{columns.isUsed}}</td>
+                </tr>
+              </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvJoins == false"
+            (click)="showUnvJoins = !showUnvJoins"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvJoins == true"
+            (click)="showUnvJoins = !showUnvJoins"></i>
+            <h6 class="ml-1 d-inline-block"> Joins </h6>
+          </div>  
+         
+          <table class="table table-bordered" *ngIf="showUnvJoins == true">
+            <thead>
+              <!-- <th>Cardinality</th> -->
+              <th>Identifier</th>
+              <th>Left Table</th>
+              <th>Right Table</th>
+              <th>Formula</th>
+            </thead>
+            <tbody>
+             
+                <tr *ngFor="let m of universeJoins;let i=index">
+                  <!-- <td>{{m.cardinality}}</td> -->
+                   <td>{{m.identifier}}</td> 
+                    <!--<td>{{m.name}}</td>For Cognos-->
+                  <td>{{m.leftTable}}</td>               
+                  <td>{{m.rightTable}}</td>
+                   <td>{{m.expression}}</td> 
+                <!--   <td>{{m.condition}}</td>  For Cognos-->
+                </tr>             
+             
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <button class="btn btn-primary btn-sm ml-1" (click)="exportUniverseData()">Export</button>
+        <div>
+          <mat-card-actions  class="style-div">
+          <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+          <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+      <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+          </mat-card-actions>
+        </div>
+      </div>
+
+      <!-- Tableau Universe Details section code  -->
+
+      <div *ngIf="showUniverseTable == false && showTableauUniverse==true">
+        <div class="backctn">
+          <button 
+          class="btn btn-sm btn-link" 
+          (click)="hideUnvObjects()">Back
+        </button>
+        </div>
+        <div class="ml-1 mt-2 theight">  
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFolders == false"
+            (click)="showUnvFolders = !showUnvFolders"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFolders == true"
+            (click)="showUnvFolders = !showUnvFolders"></i>
+            <h6 class="ml-1 d-inline-block"> Folders </h6>
+          </div>      
+         
+          <table class="table table-bordered" *ngIf="showUnvFolders == true">
+            <thead>
+              <th>Name</th>
+              <th>Path</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeFolders;let i=index">
+                <tr>
+                    <td>{{m.name}}</td>
+                    <td>{{m.path}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="ml-1 theight">
+          <div >
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvMeasures == false"
+            (click)="showUnvMeasures = !showUnvMeasures"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvMeasures == true"
+            (click)="showUnvMeasures = !showUnvMeasures"></i>
+            <h6 class="ml-1 d-inline-block"> Measures </h6>
+          </div>
+          <!-- path,name,seect,projectionfun,datatype,iused,where -->
+          <table class="table table-bordered" *ngIf="showUnvMeasures == true">
+            <thead>
+              <th>Path</th>
+              <th>Name</th>
+              <th>Formula</th>
+              <th>Data Type</th>              
+              <th>Where</th>
+              <th>Type</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeMeasures;let i=index">
+                <tr>
+                   <td>{{m.path}}</td>
+                    <td>{{m.name}}</td>
+                    <td>{{m.formula}}</td>
+                    <td>{{m.dataType}}</td>                    
+                    <td>{{m.where}}</td>
+                    <td>{{m.type}}</td> 
+                   
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvDimensions == false"
+            (click)="showUnvDimensions = !showUnvDimensions"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvDimensions == true"
+            (click)="showUnvDimensions = !showUnvDimensions"></i>
+            <h6 class="ml-1 d-inline-block"> Dimensions </h6>
+          </div>       
+         
+         
+          <table class="table table-bordered" *ngIf="showUnvDimensions == true">
+            <thead>
+              <th>Path</th>
+              <th>Name</th>
+              <th>Formula</th>
+              <th>Data Type</th>              
+              <th>Where</th>
+              <th>Type</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeDimensions;let i=index">
+                <tr>
+                    <td>{{m.path}}</td>
+                    <td>{{m.name}}</td>
+                    <td>{{m.formula}}</td>
+                    <td>{{m.dataType}}</td>                    
+                    <td>{{m.where}}</td>                   
+                    <td>{{m.type}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="ml-1 theight">       
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFilters == false"
+            (click)="showUnvFilters = !showUnvFilters"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFilters == true"
+            (click)="showUnvFilters = !showUnvFilters"></i>
+            <h6 class="ml-1 d-inline-block"> Filters </h6>
+          </div>       
+         
+          <table class="table table-bordered" *ngIf="showUnvFilters == true">
+            <thead>
+              <th>Path</th>
+              <th>Name</th>
+              <th>Where</th>              
+              <th>Is Used</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeFilters;let i=index">
+                <tr>
+                    <td>{{m.path}}</td>
+                    <td>{{m.name}}</td>
+                    <td>{{m.where}}</td>                   
+                    <td>{{m.isUsed}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table> 
+        </div>
+        <hr/>
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvTables == false"
+            (click)="showUnvTables = !showUnvTables"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvTables == true"
+            (click)="showUnvTables = !showUnvTables"></i>
+            <h6 class="ml-1 d-inline-block"> Tables </h6>
+          </div>  
+         
+          <table class="table table-bordered" *ngIf="showUnvTables == true">
+            <thead>
+              <th>Table Name</th>
+              <th>Column Name</th>
+              <th>Data Type</th>
+              <th>Is Used</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeTable;let i=index">
+                <tr>
+                    <td colspan="3">
+                      <i class="fa fa-chevron-right mt-1 " *ngIf="m.expand == false"
+                      (click)="m.expand = true"></i>
+                     <i class="fa fa-chevron-down" *ngIf="m.expand == true" 
+                      (click)="m.expand = false"></i>
+                      {{m.name}}
+                    </td>
+                    <td>
+                      {{m.isUsed}}
+                    </td>
+                </tr>
+              <ng-container *ngIf="m.expand == true">
+                <tr *ngFor="let columns of m.columns">
+                  <td></td>
+                  <td>{{columns.name}}</td>
+                  <td>{{columns.dataType}}</td>
+                  <td>{{columns.isUsed}}</td>
+                </tr>
+              </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <button class="btn btn-primary btn-sm ml-1" (click)="exportUniverseData()">Export</button>
+        <div>
+          <mat-card-actions  class="style-div">
+          <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+          <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+      <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+          </mat-card-actions>
+        </div>
+
+      </div>
+     
+
+      <!--Cognos universe details section code-->
+
+      <div *ngIf="showUniverseTable == false && showCognosUniverse==true">
+        <div class="backctn">
+          <button 
+          class="btn btn-sm btn-link" 
+          (click)="hideUnvObjects()">Back
+        </button>
+        </div>
+        <div class="ml-1 mt-2 theight">  
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFolders == false"
+            (click)="showUnvFolders = !showUnvFolders"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFolders == true"
+            (click)="showUnvFolders = !showUnvFolders"></i>
+            <h6 class="ml-1 d-inline-block"> Folders </h6>
+          </div>      
+         
+          <table class="table table-bordered" *ngIf="showUnvFolders == true">
+            <thead>
+              <th>Name</th>
+              <!-- <th>Path</th> -->
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeFolders;let i=index">
+                <tr>
+                    <td>{{m.name}}</td>
+                    <!-- <td>{{m.path}}</td> -->
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <!-- Code for universe variables cognos-->
+         <div class="ml-1 theight">
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvVariables == false"
+            (click)="showUnvVariables = !showUnvVariables"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvVariables == true"
+            (click)="showUnvVariables = !showUnvVariables"></i>
+            <h6 class="ml-1 d-inline-block"> Variables </h6>
+          </div> 
+          <!-- path,name,seect,projectionfun,datatype,iused,where -->
+           <table class="table table-bordered" *ngIf="showUnvVariables == true">
+            <thead>
+              <th>Name</th>
+              <th>Formula</th>
+              <!-- <th>Data Type</th> -->              
+              <th>Q Name</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeVariables;let i=index">
+                <tr>
+                    <td>{{m.name}}</td>
+                    <td>{{m.expression}}</td>
+                    <!-- <td>{{m.dataType}}</td> -->
+                    <td>{{m.qName}}</td> 
+                  </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+        <hr/> 
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvIdentifiers == false"
+            (click)="showUnvIdentifiers = !showUnvIdentifiers"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvIdentifiers == true"
+            (click)="showUnvIdentifiers = !showUnvIdentifiers"></i>
+            <h6 class="ml-1 d-inline-block"> Identifiers </h6>
+          </div>       
+         
+         
+          <table class="table table-bordered" *ngIf="showUnvIdentifiers == true">
+            <thead>
+              <th>Name</th>
+              <!-- <th>Formula</th> -->
+              <th>Data Type</th>              
+              <th>Q Name</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeIdentifiers;let i=index">
+                <tr>
+                  <td>{{m.name}}</td>
+                  <!-- <td>{{m.expression}}</td> -->
+                  <td>{{m.dataType}}</td>                    
+                  <td>{{m.qName}}</td> 
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvAttributes == false"
+            (click)="showUnvAttributes = !showUnvAttributes"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvAttributes == true"
+            (click)="showUnvAttributes = !showUnvAttributes"></i>
+            <h6 class="ml-1 d-inline-block"> Attributes </h6>
+          </div>       
+         
+          <table class="table table-bordered" *ngIf="showUnvAttributes == true">
+            <thead>
+              <th>Name</th>
+              <!-- <th>Formula</th> -->
+              <th>Data Type</th>              
+              <th>Q Name</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeAttributes;let i=index">
+                <tr>
+                  <td>{{m.name}}</td>
+                  <!-- <td>{{m.expression}}</td> -->
+                  <td>{{m.dataType}}</td>                    
+                  <td>{{m.qName}}</td> 
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+       
+        <div class="ml-1 theight">       
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFilters == false"
+            (click)="showUnvFilters = !showUnvFilters"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFilters == true"
+            (click)="showUnvFilters = !showUnvFilters"></i>
+            <h6 class="ml-1 d-inline-block"> Filters </h6>
+          </div>       
+         
+          <table class="table table-bordered" *ngIf="showUnvFilters == true">
+            <thead>
+              <th>Name</th>
+              <th>Formula</th>
+              <!-- <th>Data Type</th>               -->
+              <th>Q Name</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeFilters;let i=index">
+                <tr>
+                  <td>{{m.name}}</td>
+                  <td>{{m.expression}}</td>
+                  <!-- <td>{{m.dataType}}</td>                     -->
+                  <td>{{m.qName}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table> 
+        </div>
+        <hr/>
+
+        <div class="ml-1 theight">       
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFacts == false"
+            (click)="showUnvFacts = !showUnvFacts"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvFacts == true"
+            (click)="showUnvFacts = !showUnvFacts"></i>
+            <h6 class="ml-1 d-inline-block"> Facts </h6>
+          </div>       
+         
+          <table class="table table-bordered" *ngIf="showUnvFacts == true">
+            <thead>
+              <th>Name</th>
+              <!-- <th>Formula</th> -->
+              <th>Data Type</th>              
+              <th>Q Name</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeFacts;let i=index">
+                <tr>
+                  <td>{{m.name}}</td>
+                  <!-- <td>{{m.expression}}</td> -->
+                  <td>{{m.dataType}}</td>                    
+                  <td>{{m.qName}}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table> 
+        </div>
+        <hr/>
+
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvTables == false"
+            (click)="showUnvTables = !showUnvTables"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvTables == true"
+            (click)="showUnvTables = !showUnvTables"></i>
+            <h6 class="ml-1 d-inline-block"> Tables </h6>
+          </div>  
+         
+          <table class="table table-bordered" *ngIf="showUnvTables == true">
+            <thead>
+              <th>Table Name</th>
+              <th>Q Name</th>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let m of universeTable;let i=index">
+                <tr>
+                    <td>
+                      {{m.name}}
+                    </td>
+                    <!-- <td>
+                      {{m.columns}}
+                    </td>    Not needed-->
+                    <td>
+                      {{m.qName}}
+                    </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="ml-1 theight">        
+          <div>
+            <i class="fa fa-caret-right d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvJoins == false"
+            (click)="showUnvJoins = !showUnvJoins"></i>
+            <i class="fa fa-caret-down d-inline-block icon-size" aria-hidden="true" *ngIf="showUnvJoins == true"
+            (click)="showUnvJoins = !showUnvJoins"></i>
+            <h6 class="ml-1 d-inline-block"> Joins </h6>
+          </div>  
+         
+          <table class="table table-bordered" *ngIf="showUnvJoins == true">
+            <thead>
+              <!-- <th>Cardinality</th> -->
+              <th>Identifier</th>
+              <th>Left Table</th>
+              <th>Right Table</th>
+              <th>Formula</th>
+            </thead>
+            <tbody>
+             
+                <tr *ngFor="let m of universeJoins;let i=index">
+                  <td>{{m.name}}</td>
+                  <td>{{m.leftTable}}</td>               
+                  <td>{{m.rightTable}}</td>
+                  <td>{{m.condition}}</td>  
+                </tr>             
+             
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <button class="btn btn-primary btn-sm ml-1" (click)="exportUniverseData()">Export</button>
+        <div>
+          <mat-card-actions  class="style-div">
+          <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+          <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+      <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+          </mat-card-actions>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="main-container fade tab-pane fade" id="rpt-details">
+      <div class="queryListTable">
+        <table  id="report-details-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger3"
+        class="table row-border hover table-bordered text-center table-fixed p-1">
+          <thead>
+            <tr>
+              <th>Column Name</th>
+              <th>Table Name</th>
+              <th>Datasource Name</th>
+              <th>Report Path</th>
+              <th style="text-align: left;">Worksheets</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of reportInfoFor">
+              <td>{{data.columnName}}</td>
+              <td>{{data.tableName}}</td>
+              <td>{{data.datasourceName}}</td>
+              <td>{{data.reportName}}</td>
+              <td style="text-align: left;">{{data.worksheets}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <button *ngIf="showTaskInfo" class="btn btn-primary btn-sm mt-2" style="display: inline-block;"
+      (click)="exportCompleteRptInfo()">Export</button>
+      <div>
+        <mat-card-actions  class="style-div">
+        <button mat-button matStepperPrevious class="btn btn-primary btn-sm">Prev</button> 
+        <button mat-button matStepperNext class="btn btn-primary btn-sm">Next</button> 
+        </mat-card-actions>
+      </div>
+      </div>
+    </div> -->
+
+  </div>
+  
+</section>

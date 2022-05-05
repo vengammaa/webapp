@@ -1,0 +1,24 @@
+<section>
+    <div class="container">
+      <div class="form-check radio-style">
+        <input class="form-check-input radio-btn-style" type="radio" name="source-system-btn" value="SOURCESYS" [(ngModel)]="finishBtn" checked>
+        <label class="form-check-label" for="flexRadioDefault1">
+          Select Source System
+        </label>
+      </div>
+      <div class="form-check radio-style">
+        <input class="form-check-input radio-btn-style" type="radio" name="report-btn" value="REPORTSEC" [(ngModel)]="finishBtn">
+        <label class="form-check-label" for="flexRadioDefault2">
+          Select Report
+        </label>
+      </div>
+    <div>
+        <mat-card-actions class="style-div">
+            <button mat-button matStepperPrevious class="btn btn-primary btn-sm" (click)="setFinish()">Submit</button> 
+            <!-- <button mat-button matStepperNext class="btn btn-primary btn-sm" [disabled]="isDisabled">Next</button>  -->
+    <!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+        </mat-card-actions>
+        </div>
+      </div>
+  </section>
+  

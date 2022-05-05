@@ -1,0 +1,21 @@
+.chartsDimentions{
+  height: 300px;
+  width: 300px;
+}
+
+.row{
+  padding-bottom: 15px;
+}
+.main-container{
+  /* width: 100%; */
+  position: absolute;
+  background: white;
+  max-height:calc(100% - 180px);
+  overflow-y: auto;  
+}
+.chart-div{
+  border: 1px solid #9d9898;
+  padding: 9px;
+  background: white;
+  /* height: 400px; */
+}

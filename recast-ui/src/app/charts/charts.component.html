@@ -1,0 +1,97 @@
+ 
+  <!-- <div  style="background: white;height: 60px;width: 100%;padding-left: 6px;" class="border"> -->
+   
+    <div class=" row align-items-start">
+        <!-- <h5 class="pt-2">Total Reports - {{totalReportCount}}</h5> -->
+        <div class="col border">
+          <h6 class="pt-2">Total Reports - {{totalReportCount}}</h6>
+        </div>
+        <div class="col border">
+          <h6 class="pt-2">Published Reports - {{totalPublishedRepCount}}</h6>
+        </div>
+        <div class="col border">
+          <h6 class="pt-2">Actively Used Reports - {{totalActivelyUsedRepCount}}</h6>
+        </div>
+        <div class="col border">
+          <h6 class="pt-2">Scheduled Reports - {{totalScheduledRepCount}}</h6>
+        </div>
+      </div>
+    <!-- </div> -->
+    <div style="background:#e1d6d60a;;margin-top: 6px; max-height:calc(100% - 180px);">
+    <div class="row">
+      <div class="col-md-4" style="padding-right: 0px;">
+        <!-- <div class="chart-div" *ngIf="isDataAvailable">
+          <h6>Reports Overview</h6>
+          <hr />
+          <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType">
+          </canvas>
+        </div> -->
+        <div class="chart-div" *ngIf="isDataAvailable">
+          <h6>Reports updation analysis</h6>
+          <hr />
+          <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels"
+            [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
+            [plugins]="lineChartPlugins">
+          </canvas>     
+        </div>
+      </div>
+      <div class="col-md-4" style="padding-right: 0px;">
+        <div class="chart-div" *ngIf="isDataAvailable">
+          <h6>Report count based on complexity</h6>
+          <hr />
+          <canvas baseChart [data]="repComplexityChartData" [labels]="repComplexityChartLabels"
+            [chartType]="repComplexityChartType" [colors]="repComplexityChartColors">
+          </canvas>
+        </div>
+       
+      </div>
+      <div class="col-md-4" style="padding-right: 0px;">
+        <div class="chart-div" *ngIf="isDataAvailable">
+          <h6>Report count based on categories</h6>
+          <hr />
+          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+            [plugins]="barChartPlugins" [legend]="barChartLegend" [chartType]="barChartType"
+            (chartHover)="chartHovered($event)" [colors]="barChartColors"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="row" >
+      <div class="col-md-4" style="padding-right: 0px;">
+        <div class="chart-div" *ngIf="isDataAvailable">
+          <h6>Total - {{totalCommanalityReports}}</h6>
+          <h6>Report Commanality</h6>
+          <hr />
+          <canvas baseChart [datasets]="reportCreationbarChartData" [labels]="reportCreationbarChartLabels"
+            [options]="reportCreationbarChartOptions" [plugins]="reportCreationbarChartPlugins"
+            [legend]="reportCreationbarChartLegend" [chartType]="reportCreationbarChartType"
+            (chartHover)="chartHovered($event)" [colors]="reportCreationbarChartColors"></canvas>
+        </div>
+      </div>
+      <!-- <div class="col-md-4" style="padding-right: 0px;">     
+        <div class="chart-div" *ngIf="isDataAvailable">
+          <h6>Reports updation analysis</h6>
+          <hr />
+          <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels"
+            [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType"
+            [plugins]="lineChartPlugins">
+          </canvas>     
+        </div>
+      </div> -->
+
+      <div class="col-md-4" style="padding-right: 0px;">
+        <div class="chart-div">
+          <h6>Report Users</h6>
+          <hr />
+          <div [chart]="chart" style = "width: 100%; height: 35vh; display: block;"></div>
+        </div>
+      </div>
+      <div class="col-md-4" style="padding-right: 0px;">
+        <div class="chart-div">
+          <h6>Universe Details</h6>
+          <hr />
+          <div [chart]="drilldownChart" style = "width: 100%; height: 35vh; display: block;"></div>
+        </div>
+      </div>
+    </div>
+   
+  </div>

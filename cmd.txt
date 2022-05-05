@@ -1,0 +1,11 @@
+LOAD THE IMAGES
+	docker load -i recast_mysql.docker
+	docker load -i recast-app.docker
+	docker load -i recast-ui.docker
+
+TO RUN -> CD INTO DOCKER_FILES
+	docker-compose up
+
+TO STOP
+	Ctrl C
+	docker-compose down

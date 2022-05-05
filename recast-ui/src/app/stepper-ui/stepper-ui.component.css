@@ -1,0 +1,7 @@
+h1{
+    color:darkblue;
+    padding-left: 100px;
+}
+.mat-horizontal-stepper-header { 
+    pointer-events: none !important; 
+  }

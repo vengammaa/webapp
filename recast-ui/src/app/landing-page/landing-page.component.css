@@ -1,0 +1,39 @@
+.landing-section {
+    position: relative;
+    margin-left: 6%;
+}
+
+.analyze-left-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 35vh;
+    height: 10vh;
+    background-color: #fb3640;
+    color: white;
+    padding: 1vh;
+}
+
+.analyze-right-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30vh;
+    height: 10vh;
+    padding: 1vh;
+}
+
+.land-img {
+    margin-left: 10%;
+}
+
+.h1-land {
+    padding: 2vh 20vh 0;
+    margin: 0;
+    color: blue;
+}
+
+.h5-land {
+    padding: 2vh 20vh;
+    color: orange;
+}

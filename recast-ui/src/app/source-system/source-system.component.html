@@ -1,0 +1,44 @@
+<section>
+  <div class="container">
+    <div class="form-check radio-style">
+      <input class="form-check-input radio-btn-style" type="radio" name="sap-bo-btn" value="BO" [(ngModel)]="sourceBtn" disabled>
+      <label class="form-check-label" for="flexRadioDefault1">
+        SAP Business Objects
+      </label>
+    </div>
+    <div class="form-check radio-style">
+      <input class="form-check-input radio-btn-style" type="radio" name="tableau-btn" value="TABLEAU" (click)="setSourceSystem()" >
+      <label class="form-check-label" for="flexRadioDefault2">
+        Tableau
+      </label>
+    </div>
+    <div class="form-check radio-style">
+      <input class="form-check-input radio-btn-style" type="radio" name="micro-strategy-btn" value="MSTR" [(ngModel)]="sourceBtn" disabled>
+      <label class="form-check-label" for="flexRadioDefault2">
+        MicroStrategy
+      </label>
+    </div>
+    <!-- <div class="form-check radio-style">
+      <input class="form-check-input radio-btn-style" type="radio" name="powerbi-btn" value="POWERBI" [(ngModel)]="sourceBtn" disabled>
+      <label class="for-check-label" for="flexRadioDefault1">
+        Power BI
+      </label>
+    </div> -->
+    <div class="form-check radio-style">
+      <input class="form-check-input radio-btn-style" type="radio" name="cognos" value="COGNOS" [(ngModel)]="sourceBtn" disabled>
+      <label class="form-check-label" for="flexRadioDefault1">
+        IBM Cognos
+      </label>
+    </div>
+     <!--  <div class="style-div">
+          <button type="button" class="btn btn-lg btn-block btn-primary style-btn" [disabled]="isDisabled">Next</button>
+      </div> -->
+  <div class="style-div">
+    <mat-card-actions>
+<button mat-button matStepperNext class="btn btn-primary btn-sm" 
+[disabled]="isDisabled" (click)="getSource()">Next</button> 
+<!--<button (click)="goForward(stepper)" type="button">Next</button> -->
+    </mat-card-actions>
+      </div>
+    </div>
+</section>
